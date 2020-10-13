@@ -153,6 +153,7 @@ void CameraTracker::dilateFrame(cv::Mat& image, cv::Mat& depth) {
 }
 
 void DepthSegmenter::initialize() {
+  notros = true;
   CHECK(depth_camera_.initialized());
   CHECK_EQ(params_.normals.window_size % 2, 1u);
   CHECK_GT(params_.normals.window_size, 1u);
@@ -978,7 +979,7 @@ void DepthSegmenter::labelMap(const cv::Mat& rgb_image,
     inpaintImage(depth_image, edge_map, output, &output);
   }
 
-  if (params_.label.display) {
+  if (params_.label.display & notros) {
     static const std::string kWindowName = "LabelMap";
     cv::namedWindow(kWindowName, cv::WINDOW_AUTOSIZE);
     imshow(kWindowName, output);

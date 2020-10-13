@@ -171,6 +171,7 @@ class DepthSegmenter {
   void findBlobs(const cv::Mat& binary,
                  std::vector<std::vector<cv::Point2i>>* labels);
   inline DepthCamera getDepthCamera() const { return depth_camera_; }
+  bool notros;
 
  private:
   void generateRandomColorsAndLabels(size_t contours_size,

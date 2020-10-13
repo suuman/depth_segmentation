@@ -9,7 +9,7 @@ final_edge_morphological_closing_size: 1
 final_edge_morphological_opening_size: 1
 final_edge_use_morphological_closing: true
 final_edge_use_morphological_opening: true
-label_display: true
+label_display: false
 label_inpaint_method: 0
 label_method: 1
 label_min_size: 500

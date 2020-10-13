@@ -140,6 +140,11 @@ class DepthSegmentationNode {
     node_handle_.param<bool>("visualize_segmented_scene",
                              params_.visualize_segmented_scene,
                              params_.visualize_segmented_scene);
+    
+    image_transport::ImageTransport it(node_handle_);
+
+
+    labelmask_pub_ = it.advertise("labelMap/image", 1);
   }
 
  private:
@@ -188,6 +193,9 @@ class DepthSegmentationNode {
 
   ros::Publisher point_cloud2_segment_pub_;
   ros::Publisher point_cloud2_scene_pub_;
+
+  image_transport::Publisher labelmask_pub_;
+
 
   message_filters::Synchronizer<ImageSyncPolicy>* image_sync_policy_;
 
@@ -523,6 +531,8 @@ class DepthSegmentationNode {
         if (segments.size() > 0u) {
           publish_segments(segments, depth_msg->header);
         }
+        sensor_msgs::ImagePtr labmsg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", label_map).toImageMsg();
+        labelmask_pub_.publish(labmsg);
       }
       // Update the member images to the new images.
       // TODO(ff): Consider only doing this, when we are far enough away
@@ -578,6 +588,8 @@ class DepthSegmentationNode {
         if (segments.size() > 0u) {
           publish_segments(segments, depth_msg->header);
         }
+        sensor_msgs::ImagePtr labmsg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", label_map).toImageMsg();
+        labelmask_pub_.publish(labmsg);
       }
 
       // Update the member images to the new images.
@@ -626,6 +638,7 @@ class DepthSegmentationNode {
                            K_rgb);
 
     depth_segmenter_.initialize();
+    depth_segmenter_.notros = false; 
     camera_tracker_.initialize(
         camera_tracker_.kCameraTrackerNames
             [camera_tracker_.CameraTrackerType::kRgbdICPOdometry]);
